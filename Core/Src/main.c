@@ -104,6 +104,8 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "EndlessLoop"
     while (1) {
         int temp = __HAL_TIM_GET_COUNTER(&htim4);
         printf("cnt:%d\r\n", temp);
@@ -112,6 +114,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
     }
+#pragma clang diagnostic pop
   /* USER CODE END 3 */
 }
 
