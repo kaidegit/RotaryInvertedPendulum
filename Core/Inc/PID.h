@@ -17,5 +17,6 @@ extern PID_struct Rp_PID;
 
 void PID_Init(PID_struct *PID,float kp,float ki,float kd);
 float PID_calc(PID_struct *PID,float e);
+float get_error(int target,int now);
 
 #endif //ROTARYINVERTEDPENDULUM_PID_H

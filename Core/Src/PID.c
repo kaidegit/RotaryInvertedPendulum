@@ -2,14 +2,14 @@
 // Created by JIANG on 2021/7/9.
 //
 #include "PID.h"
-struct  Rp_PID;
+PID_struct Rp_PID;
 float get_error(int target,int now)
 {
     float error;
     error=target-now;
     return error;
 }
-//右=3590  立=3300  左=2830
+
 
 void PID_Init(PID_struct *PID,float kp,float ki,float kd)//  pid参数设置
 {
@@ -26,11 +26,11 @@ float PID_calc(PID_struct *PID,float e)  //PID计算
 {
     PID->err =e;
     PID->integral += PID->err;
-    if(PID->integral >= 100)
-        PID->integral = 100;
-    if(PID->integral <= -100)
-        PID->integral = -100;
-    if(PID->err>=-1&& PID->err<=1)
+    if(PID->integral >= 1000)
+        PID->integral = 1000;
+    if(PID->integral <= -1000)
+        PID->integral = -1000;
+    if(PID->err>=-5&& PID->err<=5)
         PID->integral = 0;
     PID->out = PID->Kp * PID->err +
                PID->Ki * PID->integral +
