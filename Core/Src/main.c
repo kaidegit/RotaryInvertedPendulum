@@ -101,14 +101,14 @@ int main(void) {
     MX_TIM13_Init();
     MX_TIM14_Init();
     /* USER CODE BEGIN 2 */
-    //HAL_TIM_Base_Start_IT(&htim13);
+    HAL_TIM_Base_Start_IT(&htim13);
 //    HAL_TIM_Base_Start_IT(&htim14);
     printf("HelloWorld\r\n");
     HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
     __HAL_TIM_SET_COUNTER(&htim4, 32768);
 //    SetMotorSpeed(2000);
-    //PID_Init(&Rp_PID,0,0,0);
+    PID_Init(&Rp_PID,0.6,0,0);
     /* USER CODE END 2 */
 
     /* Infinite loop */
@@ -116,14 +116,6 @@ int main(void) {
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
     while (1) {
-        int temp = __HAL_TIM_GET_COUNTER(&htim4);
-        for (int i = 0; i < 2100; i += 50) {
-            if (temp != __HAL_TIM_GET_COUNTER(&htim4)) {
-                while (1);
-            }
-            SetMotorSpeed(i);
-            //HAL_Delay(2000);
-        }
 //        uint32_t temp = GetADCValue(&hadc1);//__HAL_TIM_GET_COUNTER(&htim4);
 //        printf("cnt:%d\r\n", temp);
 //        HAL_Delay(100);

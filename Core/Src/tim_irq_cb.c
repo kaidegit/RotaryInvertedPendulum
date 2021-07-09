@@ -22,7 +22,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     if (htim->Instance == htim13.Instance) {
         Measure = GetADCValue(&hadc1);
         if ((Measure >= 1800) && (Measure <= 2800)) {
-            out = PID_calc(&Rp_PID, get_error(2275, Measure));
+            out = PID_calc(&Rp_PID, get_error(2250, Measure));
             SetMotorSpeed(out);
         } else {
             SetMotorSpeed(0);
