@@ -26,6 +26,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
             SetMotorSpeed(out);
         }else{
             SetMotorSpeed(0);
+            SetMotorSpeed(0);
         }
     } else if (htim->Instance == htim14.Instance) {
 
