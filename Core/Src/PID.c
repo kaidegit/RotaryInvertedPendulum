@@ -2,8 +2,15 @@
 // Created by JIANG on 2021/7/9.
 //
 #include "PID.h"
-struct  Rp_PID
+struct  Rp_PID;
+float get_error(int target,int now)
+{
+    float error;
+    error=target-now;
+    return error;
+}
 //右=3590  立=3300  左=2830
+
 void PID_Init(PID_struct *PID,float kp,float ki,float kd)//  pid参数设置
 {
     PID->err = 0;    //PID误差
