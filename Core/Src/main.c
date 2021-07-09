@@ -108,7 +108,7 @@ int main(void) {
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
     __HAL_TIM_SET_COUNTER(&htim4, 32768);
 //    SetMotorSpeed(2000);
-    PID_Init(&Rp_PID,0.6,0,0);
+    PID_Init(&Rp_PID,0.6,0,1);
     /* USER CODE END 2 */
 
     /* Infinite loop */
@@ -116,6 +116,10 @@ int main(void) {
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
     while (1) {
+
+//        volatile int i = 0;
+//        SetMotorSpeed(i);
+
 //        uint32_t temp = GetADCValue(&hadc1);//__HAL_TIM_GET_COUNTER(&htim4);
 //        printf("cnt:%d\r\n", temp);
 //        HAL_Delay(100);
