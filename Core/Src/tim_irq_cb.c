@@ -6,6 +6,7 @@
 #include "PID.h"
 #include "tim.h"
 #include "motor.h"
+#include "adc.h"
 
 //右=3590  立=3300  左=2830
 //逆时针速度正
@@ -16,14 +17,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
      * timer14 -> motor speed
      */
     int out;
-    int Measure;
+    volatile int Measure;
 
     if (htim->Instance == htim13.Instance) {
-        Measure=__HAL_TIM_GET_COUNTER(&htim4);
-        if((Measure >= 2830) && (Measure <= 3300))
-            out=PID_calc(&Rp_PID,get_error(3300,Measure));
+        Measure=GetADCValue(&hadc1);
+        if((Measure >= 2830) && (Measure <= 3300)){
+            out=PID_calc(&Rp_PID,get_error(3000,Measure));
             SetMotorSpeed(out);
+        }else{
+            SetMotorSpeed(0);
+        }
     } else if (htim->Instance == htim14.Instance) {
 
     }
+    HAL_TIM_Base_Start_IT(htim);
 }

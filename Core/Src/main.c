@@ -102,12 +102,12 @@ int main(void)
   MX_TIM14_Init();
   /* USER CODE BEGIN 2 */
     HAL_TIM_Base_Start_IT(&htim13);
-    HAL_TIM_Base_Start_IT(&htim14);
+//    HAL_TIM_Base_Start_IT(&htim14);
     printf("HelloWorld\r\n");
     HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
     HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_2);
     __HAL_TIM_SET_COUNTER(&htim4, 32768);
-    SetMotorSpeed(2000);
+//    SetMotorSpeed(2000);
     PID_Init(&Rp_PID,100,0,0);
   /* USER CODE END 2 */
 
