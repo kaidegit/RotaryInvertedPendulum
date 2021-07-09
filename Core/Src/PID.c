@@ -2,7 +2,9 @@
 // Created by JIANG on 2021/7/9.
 //
 #include "PID.h"
-PID_struct Rp_PID;
+PID_struct Rp_A_PID;
+PID_struct Rp_P_PID;
+
 float get_error(int target,int now)
 {
     float error;
@@ -22,7 +24,7 @@ void PID_Init(PID_struct *PID,float kp,float ki,float kd)//  pid参数设置
     PID->out = 0;
 }
 
-float PID_calc(PID_struct *PID,float e)  //PID计算
+float PID_calc_A(PID_struct *PID,float e)  //PID计算
 {
     PID->err =e;
     PID->integral += PID->err;
@@ -38,6 +40,28 @@ float PID_calc(PID_struct *PID,float e)  //PID计算
     PID->err_last = PID->err;
     return PID->out;
 }
+
+float PID_calc_P(PID_struct *PID,float e)  //PID计算
+{
+    static float Position_PWM,Last_Position,Position_Bias,Position_Differential;
+
+    static float Position_Least;
+
+    Position_Least =e-32768;             //位置差值
+
+    Position_Bias *= 0.8;
+    Position_Bias += Position_Least*0.2;	             // 一阶低通 Bias = 0.8*Bias + 位置差值*0.2
+
+    Position_Differential = Position_Bias-Last_Position;  // 偏差变化率
+
+    PID->out = PID->Kp * Position_Bias +
+               PID->Kd * Position_Differential;
+
+    Last_Position = Position_Bias;
+
+    return PID->out;
+}
+
 
 //float PID_calc_z_y(PID_struct *PID,float e)   //PID计算
 //{

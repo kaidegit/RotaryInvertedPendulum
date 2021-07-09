@@ -29,6 +29,8 @@
 #include "stdio.h"
 #include "PID.h"
 #include "motor.h"
+
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -108,7 +110,8 @@ int main(void) {
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
     __HAL_TIM_SET_COUNTER(&htim4, 32768);
 //    SetMotorSpeed(2000);
-    PID_Init(&Rp_PID,0.6,0,0);
+    PID_Init(&Rp_A_PID,0.6,0,0);
+    PID_Init(&Rp_P_PID,0,0,0);
     /* USER CODE END 2 */
 
     /* Infinite loop */

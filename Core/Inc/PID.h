@@ -13,10 +13,12 @@ typedef struct pid{
     float integral;            //累计误差
 }PID_struct;
 
-extern PID_struct Rp_PID;
+extern PID_struct Rp_A_PID;
+extern PID_struct Rp_P_PID;
 
 void PID_Init(PID_struct *PID,float kp,float ki,float kd);
-float PID_calc(PID_struct *PID,float e);
+float PID_calc_A(PID_struct *PID,float e);
+float PID_calc_P(PID_struct *PID,float e);
 float get_error(int target,int now);
 
 #endif //ROTARYINVERTEDPENDULUM_PID_H
