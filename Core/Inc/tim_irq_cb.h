@@ -1,0 +1,10 @@
+//
+// Created by yekai on 2021/7/9.
+//
+
+#ifndef ROTARYINVERTEDPENDULUM_TIM_IRQ_CB_H
+#define ROTARYINVERTEDPENDULUM_TIM_IRQ_CB_H
+
+#include "stm32f4xx.h"
+
+#endif //ROTARYINVERTEDPENDULUM_TIM_IRQ_CB_H

@@ -24,5 +24,4 @@ void SetMotorSpeed(int32_t speed) {
         HAL_GPIO_WritePin(MOTOR_IN2_GPIO_Port, MOTOR_IN2_Pin, GPIO_PIN_SET);
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, -speed);
     }
-
 }
