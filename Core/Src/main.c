@@ -23,7 +23,7 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-
+#include "motor.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stdio.h"
@@ -99,7 +99,9 @@ int main(void)
   /* USER CODE BEGIN 2 */
     printf("HelloWorld\r\n");
     HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
+    HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_2);
     __HAL_TIM_SET_COUNTER(&htim4, 32768);
+    SetMotorSpeed(2000);
   /* USER CODE END 2 */
 
   /* Infinite loop */
