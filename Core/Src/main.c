@@ -111,12 +111,6 @@ int main(void)
     while (1) {
         uint32_t temp = __HAL_TIM_GET_COUNTER(&htim4);
 //        printf("cnt:%d\r\n", temp);
-        HAL_ADC_Start(&hadc1);
-        HAL_ADC_PollForConversion(&hadc1, 0xff);
-        if (HAL_IS_BIT_SET(HAL_ADC_GetState(&hadc1), HAL_ADC_STATE_REG_EOC)) {
-            temp = HAL_ADC_GetValue(&hadc1);
-        }
-        printf("adcraw:%d,adc:%d\r\n",temp, (int) (temp / 4096.0 * 3300));
         HAL_Delay(100);
     /* USER CODE END WHILE */
 
