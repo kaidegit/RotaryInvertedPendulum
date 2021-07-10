@@ -14,8 +14,8 @@
 
 
 const int32_t ADC_MIDDLE = 1830;
-const int32_t ADC_MIN = ADC_MIDDLE - 250;
-const int32_t ADC_MAX = ADC_MIDDLE + 250;
+const int32_t ADC_MIN = ADC_MIDDLE - 350;
+const int32_t ADC_MAX = ADC_MIDDLE + 350;
 
 // 右=2390  立=2275  左=2140
 
@@ -34,7 +34,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
      * timer14 -> motor speed
      */
     int out1 = 0;  //角度环输出
-    int out2 = 0;  //位置环输出
+    static int out2 = 0;  //位置环输出
     int out = 0;   //整体输出
     static int time = 0;  //计时
     static bool Position_flag = false;  //位置环计算标志
@@ -65,15 +65,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
                 if (time == 5) {  //每隔25ms进行一次找到平衡点
                     motor_speed = __HAL_TIM_GET_COUNTER(&htim4) - 32768;
                     out2 = PID_calc_P(&Rp_P_PID, motor_speed);
-
+#ifdef OUT_DEBUG
 //                    printf("motor_speed:%d\r\n",  __HAL_TIM_GET_COUNTER(&htim4));
+#endif
                     time = 0;
                 }
             }
 
-            out = out1 + out2;
+            out = out1 - out2;
 #ifdef OUT_DEBUG
-            printf("out1:%d,out2:%d,out:%d,Position_flag:%d\r\n", out1, out2, out,Position_flag);
+            printf("out1:%d out2:%d out:%d\r\n", out1, out2, out);
 #endif
             SetMotorSpeed(out);
 
