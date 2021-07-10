@@ -120,9 +120,9 @@ int main(void) {
 #pragma ide diagnostic ignored "EndlessLoop"
     while (1) {
 //        uint32_t temp = GetADCValue(&hadc1);
-        int temp = __HAL_TIM_GET_COUNTER(&htim4);
-        printf("cnt:%d\r\n", temp);
-        HAL_Delay(100);
+//        int temp = __HAL_TIM_GET_COUNTER(&htim4);
+//        printf("cnt:%d\r\n", temp);
+//        HAL_Delay(100);
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
