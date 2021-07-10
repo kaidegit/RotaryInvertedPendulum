@@ -47,7 +47,7 @@ float PID_calc_P(PID_struct *PID,float e)  //PID计算
 
     static float Position_Least;
 
-    Position_Least =e-32768;             //位置差值
+    Position_Least =e;             //位置差值
 
     Position_Bias *= 0.8;
     Position_Bias += Position_Least*0.2;	             // 一阶低通 Bias = 0.8*Bias + 位置差值*0.2

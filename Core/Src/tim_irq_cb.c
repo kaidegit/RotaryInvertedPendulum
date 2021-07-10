@@ -8,20 +8,29 @@
 #include "motor.h"
 #include "adc.h"
 #include "speed.h"
+#include "stdbool.h"
 
-//右=2390  立=2275  左=2140
-//逆时针速度正
+// 右=2390  立=2275  左=2140
+
+// 杆在左边时，内环pid正，电机逆时针转
+// 杆在右边时，内环pid负，电机顺时针转
+
+// 电机逆时针转，编码器数值减
+// 电机顺时针转，编码器数值加
+
+// 转一圈大约780个编码器CNT数值，每度大约2个编码器CNT数值
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
     /**
-     * timer13 -> pid
+     * timer13 -> pid  5ms
      * timer14 -> motor speed
      */
     int out1 = 0;  //角度环输出
     int out2 = 0;  //位置环输出
     int out = 0;   //整体输出
-    int time = 0;  //计时
-    int P_flag = 0;  //位置环开启标致
+    static int time = 0;  //计时
+    static bool Position_flag = false;  //位置环计算标志
 
     volatile int Measure;  //测量值
 
@@ -30,31 +39,35 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
         if ((Measure >= 1800) && (Measure <= 2800)) {  //处于平衡区间
 
             out1 = PID_calc_A(&Rp_A_PID, get_error(2310, Measure));
-/*
-            if (P_flag == 0) {
-                if ((Measure >= 2000) && (Measure <= 2400)) {
-                    time++;                             //当角度环平衡后开启位置环
-                }
-                if (time > 60) {
-                    P_flag = 1;
-                    time = 0;
-                }                 //开器位置控制 编码器致0
-            }
 
-            if (P_flag == 1)    //开启位置环time
+            if ((Measure >= 2000) && (Measure <= 2400)) {
+                time++;                             //当角度环平衡后开启位置环
+            }
+            if (time > 60) {
+                Position_flag = true;
+                time = 0;
+                __HAL_TIM_SET_COUNTER(&htim14, 32768);
+            }//开启位置控制 编码器置0
+
+            if (Position_flag)    //开启位置环time
             {
                 time++;
                 if (time == 5) {  //每隔25ms进行一次找到平衡点
+                    motor_speed = __HAL_TIM_GET_COUNTER(&htim14) - 32768;
                     out2 = PID_calc_P(&Rp_P_PID, motor_speed);
+
                     time = 0;
                 }
             }
-*/
+
             out = out1 - out2;// 正反馈输出
             SetMotorSpeed(out);
 
         } else {
             SetMotorSpeed(0);
+            Position_flag = false;
+            time = 0;
+            __HAL_TIM_SET_COUNTER(&htim14, 32768);
         }
     } else if (htim->Instance == htim14.Instance) {
 
