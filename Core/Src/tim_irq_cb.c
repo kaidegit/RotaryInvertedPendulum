@@ -9,6 +9,13 @@
 #include "adc.h"
 #include "speed.h"
 #include "stdbool.h"
+#include "stdio.h"
+#include "debug_conf.h"
+
+
+const int32_t ADC_MIDDLE = 1830;
+const int32_t ADC_MIN = ADC_MIDDLE - 250;
+const int32_t ADC_MAX = ADC_MIDDLE + 250;
 
 // 右=2390  立=2275  左=2140
 
@@ -36,38 +43,45 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
     if (htim->Instance == htim13.Instance) {
         Measure = GetADCValue(&hadc1);
-        if ((Measure >= 1800) && (Measure <= 2800)) {  //处于平衡区间
+#ifdef ADC_DEBUG
+        printf("%d\r\n",Measure);
+#endif
+        if ((Measure >= ADC_MIN) && (Measure <= ADC_MAX)) {  //处于平衡区间
 
-            out1 = PID_calc_A(&Rp_A_PID, get_error(2310, Measure));
+            out1 = PID_calc_A(&Rp_A_PID, get_error(ADC_MIDDLE, Measure));
 
-            if ((Measure >= 2000) && (Measure <= 2400)) {
+            if ((Measure >= ADC_MIN) && (Measure <= ADC_MAX)) {
                 time++;                             //当角度环平衡后开启位置环
             }
             if (time > 60) {
                 Position_flag = true;
                 time = 0;
-                __HAL_TIM_SET_COUNTER(&htim14, 32768);
+                __HAL_TIM_SET_COUNTER(&htim4, 32768);
             }//开启位置控制 编码器置0
 
             if (Position_flag)    //开启位置环time
             {
                 time++;
                 if (time == 5) {  //每隔25ms进行一次找到平衡点
-                    motor_speed = __HAL_TIM_GET_COUNTER(&htim14) - 32768;
+                    motor_speed = __HAL_TIM_GET_COUNTER(&htim4) - 32768;
                     out2 = PID_calc_P(&Rp_P_PID, motor_speed);
 
+//                    printf("motor_speed:%d\r\n",  __HAL_TIM_GET_COUNTER(&htim4));
                     time = 0;
                 }
             }
 
-            out = out1 - out2;// 正反馈输出
+            out = out1 + out2;
+#ifdef OUT_DEBUG
+            printf("out1:%d,out2:%d,out:%d,Position_flag:%d\r\n", out1, out2, out,Position_flag);
+#endif
             SetMotorSpeed(out);
 
         } else {
             SetMotorSpeed(0);
             Position_flag = false;
             time = 0;
-            __HAL_TIM_SET_COUNTER(&htim14, 32768);
+            __HAL_TIM_SET_COUNTER(&htim4, 32768);
         }
     } else if (htim->Instance == htim14.Instance) {
 
