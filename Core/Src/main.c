@@ -103,15 +103,31 @@ int main(void)
   MX_TIM13_Init();
   MX_TIM14_Init();
   /* USER CODE BEGIN 2 */
+    printf("HelloWorld\r\n");
+
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+//    SetMotorSpeed(1500);
+//    HAL_Delay(200);
+//    SetMotorSpeed(-1500);
+//    HAL_Delay(400);
+//    SetMotorSpeed(1500);
+//    HAL_Delay(200);
+//    SetMotorSpeed(-1500);
+//    HAL_Delay(400);
+
     HAL_TIM_Base_Start_IT(&htim13);
 //    HAL_TIM_Base_Start_IT(&htim14);
-    printf("HelloWorld\r\n");
+
+
+
     HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
-    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+
     __HAL_TIM_SET_COUNTER(&htim4, 32768);
-//    SetMotorSpeed(2000);
-    PID_Init(&Rp_A_PID, 2.5, 0,19 );
-    PID_Init(&Rp_P_PID, 180, 0, 200);
+
+    PID_Init(&Rp_A_PID, 6, 0,0 );
+    PID_Init(&Rp_P_PID, 0, 0, 0);
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */

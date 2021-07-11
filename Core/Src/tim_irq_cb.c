@@ -82,7 +82,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
             SetMotorSpeed(0);
             Position_flag = false;
             time = 0;
-            __HAL_TIM_SET_COUNTER(&htim4, 32768);
+            PID_Clear();
+     //       __HAL_TIM_SET_COUNTER(&htim4, 32768);
         }
     } else if (htim->Instance == htim14.Instance) {
 

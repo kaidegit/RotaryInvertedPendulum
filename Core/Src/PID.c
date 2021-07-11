@@ -41,11 +41,12 @@ float PID_calc_A(PID_struct *PID, float e)  //PID计算
     return PID->out;
 }
 
+float Last_Position;
+
 float PID_calc_P(PID_struct *PID, float e)  //PID计算
 {
-    static float Last_Position, Position_Bias, Position_Differential;
-
-    static float Position_Least;
+    float Position_Bias, Position_Differential;
+    float Position_Least;
 
     Position_Least = e;             //位置差值
 
@@ -61,7 +62,9 @@ float PID_calc_P(PID_struct *PID, float e)  //PID计算
 
     return PID->out;
 }
-
+void PID_Clear(){
+    Last_Position = 0;
+}
 
 //float PID_calc_z_y(PID_struct *PID,float e)   //PID计算
 //{
