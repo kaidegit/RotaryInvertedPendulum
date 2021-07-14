@@ -9,7 +9,7 @@
 
 
 
-const int32_t DEAD_SPEED = 1250;
+const int32_t DEAD_SPEED = 600;
 const int32_t SPEED_MAX = 2100 - DEAD_SPEED;
 
 void SetMotorSpeed(int32_t speed) {

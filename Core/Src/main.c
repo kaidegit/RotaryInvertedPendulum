@@ -124,8 +124,8 @@ int main(void)
 
     __HAL_TIM_SET_COUNTER(&htim4, 32768);
 
-    PID_Init(&Rp_A_PID, 6, 0,0 );
-    PID_Init(&Rp_P_PID, 0, 0, 0);
+    PID_Init(&Rp_A_PID,15, 1.2,70 );
+    PID_Init(&Rp_P_PID, 310, 0, 210);
 
 
   /* USER CODE END 2 */
