@@ -11,9 +11,10 @@
 #include "stdbool.h"
 #include "stdio.h"
 #include "debug_conf.h"
+#include "DataScope_DP.h"
 
 
-const int32_t ADC_MIDDLE = 1835;
+const int32_t ADC_MIDDLE = 1854;
 const int32_t ADC_MIN = ADC_MIDDLE - 350;
 const int32_t ADC_MAX = ADC_MIDDLE + 350;
 
@@ -41,49 +42,38 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     static bool Position_flag = false;  //位置环计算标志
 
     volatile int Measure;  //测量值
+
     if (htim->Instance == htim13.Instance) {
         Measure = GetADCValue(&hadc1);
 
 #ifdef ADC_DEBUG
-    //    printf("%d\r\n",Measure);
+//        printf("%d\r\n", Measure);
 #endif
         if ((Measure >= ADC_MIN) && (Measure <= ADC_MAX)) {  //处于平衡区间
 
+            Measure = GetADCValue(&hadc1);
             out1 = PID_calc_A(&Rp_A_PID, get_error(ADC_MIDDLE, Measure));
 
-            if ((Measure >= ADC_MIN) && (Measure <= ADC_MAX)) {
-                All_time++;                             //当角度环平衡后开启位置环
+            P_time++;
+            if (P_time > 4) {  //每隔25ms进行一次找到平衡点
+                motor_speed = __HAL_TIM_GET_COUNTER(&htim4) - 32768;
+                out2 = PID_calc_P(&Rp_P_PID, motor_speed);
+                P_time = 0;
             }
-            if (All_time > 59) {
-                Position_flag = true;
-                All_time = 0;
-               __HAL_TIM_SET_COUNTER(&htim4, 32768);
-            }//开启位置控制 编码器置0
 
-            if (Position_flag)    //开启位置环time
-            {
-                P_time++;
-                if (P_time == 5) {  //每隔25ms进行一次找到平衡点
-                    motor_speed = __HAL_TIM_GET_COUNTER(&htim4) - 32768;
-                    out2 = PID_calc_P(&Rp_P_PID, motor_speed);
-#ifdef OUT_DEBUG
-    //               printf("motor_speed:%d\r\n",  __HAL_TIM_GET_COUNTER(&htim4));
-#endif
-                    P_time = 0;
-                }
-            }
             out = out1 - out2;
-#ifdef OUT_DEBUG
-        //   printf("out1:%d out2:%d out:%d\r\n", out1, out2, out);
-            printf("i:%d\r\n",(int)Rp_A_PID.integral);
-#endif
             SetMotorSpeed(out);
+
+            DataScope_Get_Channel_Data(Measure,1);
+            DataScope_Get_Channel_Data(motor_speed,2);
 
         } else {
             SetMotorSpeed(0);
             Position_flag = false;
-            out2=0;
-            All_time=0;
+            out2 = 0;
+            out1 = 0;
+            out = 0;
+            All_time = 0;
             P_time = 0;
             PID_Clear();
             __HAL_TIM_SET_COUNTER(&htim4, 32768);
@@ -94,3 +84,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     }
     HAL_TIM_Base_Start_IT(htim);
 }
+
+#ifdef OUT_DEBUG
+//               printf("motor_speed:%d\r\n",  __HAL_TIM_GET_COUNTER(&htim4));
+#endif
+//            DataScope_Get_Channel_Data(motor_speed, 2);
+//            DataScope_Get_Channel_Data(out2, 1);
+#ifdef OUT_DEBUG
+//        printf("out1:%d out2:%d out:%d\r\n", out1, out2, out);//  printf("i:%d\r\n",(int)Rp_A_PID.integral);
+#endif
+
